@@ -1,0 +1,20 @@
+<VirtualHost *:80>
+    ServerAdmin dibanez@gmail.com
+    ServerName {{domain_name_web}}
+    ServerAlias {{domain_name_web}}
+    ServerAlias {{domain_name}}
+    DocumentRoot {{ projects_dir_web }}
+
+    <Directory {{ projects_dir_web }}>
+            Options FollowSymLinks
+            AllowOverride All
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error-{{domain_name_web}}.log
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog ${APACHE_LOG_DIR}/access-{{domain_name_web}}.log combined
+</VirtualHost>

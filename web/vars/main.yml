@@ -1,0 +1,6 @@
+---
+git_repo: git@github.com:dibanez/wordpress-test.git
+
+domain_name: dibanez-test.com
+domain_name_web: www.dibanez-test.com
+projects_dir_web: /var/www/www.dibanez-test.com

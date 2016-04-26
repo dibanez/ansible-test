@@ -1,0 +1,38 @@
+---
+# tasks file for web
+    - name: Install vhost {{domain_name_web}}
+      template: src=templates/web.site dest=/etc/apache2/sites-available/web.conf
+      tags: apache
+      become: yes
+
+    - name: Check default site
+      stat: path=/etc/apache2/sites-enabled/000-default.conf
+      register: default_site_exists
+      tags: apache
+
+    - name: Apache | Disable the default site
+      command: a2dissite 000-default
+      when: default_site_exists
+      tags: apache
+      become: yes
+
+    - name: Apache | Enable vhost {{domain_name_web}}
+      command: a2ensite web.conf
+      tags: apache
+      become: yes
+
+    - file: path={{ projects_dir_web }} state=directory mode=0755
+    - name: Permission for ubuntu.
+      file: path={{ projects_dir_web }} state=directory recurse=yes owner=ubuntu group=ubuntu mode=0755
+      tags: deploy
+
+    - name: Deploy last version.
+      git: repo={{git_repo}} dest={{ projects_dir_web }} update=yes force=yes ssh_opts="-o StrictHostKeyChecking=no"
+      tags: deploy
+      become: no
+
+    - name: Permission for www-data
+      file: path={{ projects_dir_web }} state=directory recurse=yes owner=www-data group=www-data mode=0755
+      tags: deploy
+      notify: restart apache
+      become: yes

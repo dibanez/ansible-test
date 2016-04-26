@@ -1,0 +1,70 @@
+---
+# Cambio de hostname.
+- name: Set hostname
+  hostname: name={{ hostname }}
+  when: hostname is defined
+  tags: packages
+# Incluir hostname en /etc/hosts.
+- name: Update /etc/hosts
+  lineinfile:
+    dest=/etc/hosts
+    regexp="^127\.0\.1\.1"
+    line="127.0.1.1{{'\t'}}{{ hostname }}"
+    state=present
+  tags: packages
+
+- name: apt-get Update
+  apt: update_cache=yes
+
+- name: Ensure bash, OpenSSl, and libssl are the latest versions
+  apt: name="{{ item }}" update_cache="{{ update_apt_cache }}" state=latest
+  with_items:
+    - bash
+    - openssl
+    - libssl-dev
+    - libssl-doc
+  tags: packages
+
+- name: Install base packages
+  apt: name="{{ item }}" update_cache="{{ update_apt_cache }}" force=yes state=installed
+  with_items:
+    - build-essential
+    - ntp
+    - htop
+    - git
+    - gettext
+    - libpq-dev
+    - python-dev
+    - python-pip
+    - python-pycurl
+    - python3-pip
+    - sendmail-bin
+    - libjpeg-dev
+  tags: packages
+
+- name: Install LAMP packages
+  apt: name="{{ item }}" update_cache="{{ update_apt_cache }}" force=yes state=installed
+  with_items:
+    - php5
+    - apache2
+    - apache2-utils
+    - mysql-client
+    - php5-mysqlnd
+    - php5-curl
+    - php5-gd
+    - php5-mcrypt
+    - php5-memcache
+    - php5-gmp
+    - python-mysqldb
+  tags: packages
+
+# enables the Apache2 module rewrite"
+- apache2_module: state=present name={{item}}
+  become: yes
+  with_items:
+    - rewrite
+    - headers
+    - expires
+    - deflate
+    - filter
+  tags: apache
