@@ -21,6 +21,11 @@
       tags: apache
       become: yes
 
+    - name: Update /etc/php.ini
+      template: src=files/php.ini dest=/etc/php5/apache2/php.ini
+      tags: php.ini
+      become: yes
+
     - file: path={{ projects_dir_web }} state=directory mode=0755
     - name: Permission for ubuntu.
       file: path={{ projects_dir_web }} state=directory recurse=yes owner=ubuntu group=ubuntu mode=0755
