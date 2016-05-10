@@ -32,9 +32,15 @@
       tags: deploy
 
     - name: Deploy last version.
-      git: repo={{git_repo}} dest={{ projects_dir_web }} update=yes force=yes ssh_opts="-o StrictHostKeyChecking=no"
+      git: repo={{git_repo}} dest={{ projects_dir_web }} version={{ git_brach }} update=yes force=yes ssh_opts="-o StrictHostKeyChecking=no"
       tags: deploy
       become: no
+
+    - name: Install wp-config
+      template: src=templates/wp-config.php dest={{ projects_dir_web }}/wp-config.php
+      when: git_brach == "phpvigo"
+      tags: deploy
+      become: yes
 
     - name: Permission for www-data
       file: path={{ projects_dir_web }} state=directory recurse=yes owner=www-data group=www-data mode=0755
