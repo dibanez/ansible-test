@@ -42,6 +42,11 @@
       tags: deploy
       become: yes
 
+    - name: Update htacces
+      template: src=files/htaccess dest={{ projects_dir_web }}/.htaccess
+      tags: deploy
+      become: yes
+
     - name: Permission for www-data
       file: path={{ projects_dir_web }} state=directory recurse=yes owner=www-data group=www-data mode=0755
       tags: deploy
