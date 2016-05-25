@@ -38,7 +38,7 @@
 
     - name: Install wp-config
       template: src=templates/wp-config.php dest={{ projects_dir_web }}/wp-config.php
-      when: git_brach == "phpvigo"
+      when: git_brach != "master"
       tags: deploy
       become: yes
 
